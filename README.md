@@ -1,4 +1,5 @@
 # rust_learning
+
 rust learning
 
-笔记路径：[Rust.md](https://github.com/xiaodongQ/devNoteBackup/blob/master/各语言记录/Rust.md)
+笔记路径：[rust_relearn_note.md](https://github.com/xiaodongQ/devNoteBackup/blob/master/各分类记录/Rust/rust_relearn_note.md)
