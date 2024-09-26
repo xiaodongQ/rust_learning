@@ -4,10 +4,13 @@
 ///     面向对象编程，Config实例通过对象的方法来返回，而不是通过函数返回值
 ///     参数解析的错误处理，通过panic!宏来处理
 /// 进一步优化4：使用Result<T, E>来处理错误
+/// 进一步优化5：分离main里的业务逻辑
+/// 进一步优化6：分离业务逻辑到库包lib.rs中，并在main.rs里引入
 ///    
 /// 
 use std::env;
-use std::fs;
+
+use minigrep::Config;
 
 fn main() {
     // 模块化代码
@@ -21,32 +24,19 @@ fn main() {
     });
     println!("cmd:{}, query:{}, file_path:{}", &args[0], config.query, config.file_path);
 
-    // 通过std::fs模块的 read_to_string 读取文件内容
-    // 返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
-    let contents = fs::read_to_string(config.file_path);
-    match contents {
-        Ok(contents) => println!("{}", contents),
-        Err(error) => println!("Problem opening the file: {:?}", error),
+    // 匹配业务逻辑
+    if let Err(err) = minigrep::run(config) {
+        println!("run error: {}", err);
+        std::process::exit(1);
     }
+    // 上面若不使用 if...let语法，则需要用下述match语法
+    // let ret = minigrep::run(config);
+    // match ret {
+    //     Ok(_) => println!("run success!"),
+    //     Err(err) => {
+    //         println!("run error: {}", err);
+    //         std::process::exit(1);
+    //     }
+    // }
 }
 
-struct Config {
-    query : String,
-    file_path : String,
-}
-
-// 通过 impl 关键字来实现方法
-impl Config {
-    // 从代码惯例的角度出发，new 往往不会失败，修改函数名为 build
-    // 传入参数：动态数组的不可变引用，可以用数组切片来代替
-    // 通过Result<T, E>返回错误， 指定 &str 的生命周期为 'static
-    fn build(args : &[String]) -> Result<Config, &'static str> {
-        if args.len() != 3 {
-            return Err("args length invalid");
-        }
-        let query = args[1].clone();
-        let file_path = args[2].clone();
-
-        return Ok(Config { query, file_path });
-    }
-}
