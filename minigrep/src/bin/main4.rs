@@ -16,11 +16,13 @@ fn main() {
     println!("cmd:{}, query:{}, file_path:{}", &args[0], config.query, config.file_path);
 
     // 通过std::fs模块的 read_to_string 读取文件内容
-    // 返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
-    let contents = fs::read_to_string(config.file_path);
-    match contents {
-        Ok(contents) => println!("{}", contents),
-        Err(error) => println!("Problem opening the file: {:?}", error),
+    // unwrap 方法用于处理 Result 类型，如果 Result 类型是 Ok，则返回 Ok 中的值，否则程序会 panic
+    let file_contents = fs::read_to_string(config.file_path).unwrap();
+    println!("\n==============result:==============");
+    for line in file_contents.lines() {
+        if line.contains(&config.query) {
+            println!("{}", line);
+        }
     }
 }
 

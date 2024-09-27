@@ -1,3 +1,5 @@
+/// 实现基本的参数解析、文件读取、匹配逻辑
+
 use std::env;
 use std::fs;
 
@@ -19,12 +21,21 @@ fn main() {
     // 通过std::fs模块的 read_to_string 读取文件内容
     // 返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
     let contents = fs::read_to_string(file_path);
+    let mut file_contents = String::new();
     match contents {
-        Ok(contents) => println!("{}", contents),
+        // 此处Ok的模式匹配，绑定变量text，尽量不要用同名变量contents，会发生变量遮蔽，容易混淆
+        Ok(text) => {
+            file_contents = text;
+            println!("file contents:\n{}", file_contents);
+        }
         Err(error) => println!("Problem opening the file: {:?}", error),
     }
 
-    // 进行匹配
-    
-
+    // 匹配逻辑
+    println!("\n==============result:==============");
+    for line in file_contents.lines() {
+        if line.contains(query) {
+            println!("{}", line);
+        }
+    }
 }

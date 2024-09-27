@@ -1,4 +1,4 @@
-/// 优化1：解析传入参数抽取为函数
+/// 优化1：解析传入参数抽取为函数；匹配逻辑由 match 调整为 unwrap() 处理
 /// 
 use std::env;
 // 下面read_to_string指定作用域则不需要use std::fs
@@ -16,11 +16,13 @@ fn main() {
     println!("cmd:{}, query:{}, file_path:{}", &args[0], query, file_path);
 
     // 通过std::fs模块的 read_to_string 读取文件内容
-    // 返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
-    let contents = std::fs::read_to_string(file_path);
-    match contents {
-        Ok(contents) => println!("{}", contents),
-        Err(error) => println!("Problem opening the file: {:?}", error),
+    // unwrap 方法用于处理 Result 类型，如果 Result 类型是 Ok，则返回 Ok 中的值，否则程序会 panic
+    let file_contents = std::fs::read_to_string(file_path).unwrap();
+    println!("\n==============result:==============");
+    for line in file_contents.lines() {
+        if line.contains(query) {
+            println!("{}", line);
+        }
     }
 }
 

@@ -28,8 +28,42 @@ impl Config {
 pub fn run(config : Config) -> Result<(), Box<dyn Error>> {
     // 通过std::fs模块的 read_to_string 读取文件内容，其返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
     // `?`操作符会返回`Result`类型，如果`Ok`则返回`Ok`中的值，如果`Err`则返回`Err`中的值
-    let _contents = fs::read_to_string(config.file_path)?;
+    let contents = fs::read_to_string(config.file_path)?;
     
-    println!("file read ok!");
+    println!("\n========grep result:========");
+    for line in search(&config.query, &contents) {
+        println!("{}", line);
+    }
     Ok(())
+}
+
+// 匹配逻辑抽取为单独函数
+// 有多个引用，需要手动标注生命周期
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let mut results = Vec::new();
+    // lines 方法将目标字符串进行按行分割
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+    // 表达式返回值
+    results
+}
+
+// 测试用例，测试 search 匹配逻辑
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Duct tape.";
+        assert_eq!(search(query, contents), vec!["safe, fast, productive."]);
+    }
 }

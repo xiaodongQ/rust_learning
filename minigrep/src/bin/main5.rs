@@ -3,7 +3,7 @@
 /// 进一步优化3：
 ///     面向对象编程，Config实例通过对象的方法来返回，而不是通过函数返回值
 ///     参数解析的错误处理，通过panic!宏来处理
-/// 进一步优化4：使用Result<T, E>来处理错误
+/// 进一步优化4：使用Result<T, E>来处理错误；方法名调整为`build`（语义更合适），并通过`闭包`处理错误
 ///    
 /// 
 use std::env;
@@ -22,11 +22,13 @@ fn main() {
     println!("cmd:{}, query:{}, file_path:{}", &args[0], config.query, config.file_path);
 
     // 通过std::fs模块的 read_to_string 读取文件内容
-    // 返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
-    let contents = fs::read_to_string(config.file_path);
-    match contents {
-        Ok(contents) => println!("{}", contents),
-        Err(error) => println!("Problem opening the file: {:?}", error),
+    // unwrap 方法用于处理 Result 类型，如果 Result 类型是 Ok，则返回 Ok 中的值，否则程序会 panic
+    let file_contents = fs::read_to_string(config.file_path).unwrap();
+    println!("\n==============result:==============");
+    for line in file_contents.lines() {
+        if line.contains(&config.query) {
+            println!("{}", line);
+        }
     }
 }
 

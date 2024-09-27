@@ -3,10 +3,9 @@
 /// 进一步优化3：
 ///     面向对象编程，Config实例通过对象的方法来返回，而不是通过函数返回值
 ///     参数解析的错误处理，通过panic!宏来处理
-/// 进一步优化4：使用Result<T, E>来处理错误
+/// 进一步优化4：使用Result<T, E>来处理错误；方法名调整为`build`（语义更合适），并通过`闭包`处理错误
 /// 进一步优化5：分离main里的业务逻辑
-/// 进一步优化6：分离业务逻辑到库包lib.rs中，并在main.rs里引入
-///    
+/// 进一步优化6：分离业务逻辑到库包lib.rs中，并在main.rs里use引入；同时业务逻辑 run 中的匹配部分，继续抽取为 search 函数
 /// 
 use std::env;
 
@@ -25,18 +24,10 @@ fn main() {
     println!("cmd:{}, query:{}, file_path:{}", &args[0], config.query, config.file_path);
 
     // 匹配业务逻辑
+    // 用 if...let语法替换上一个文件中的match语法，更为简洁
     if let Err(err) = minigrep::run(config) {
         println!("run error: {}", err);
         std::process::exit(1);
     }
-    // 上面若不使用 if...let语法，则需要用下述match语法
-    // let ret = minigrep::run(config);
-    // match ret {
-    //     Ok(_) => println!("run success!"),
-    //     Err(err) => {
-    //         println!("run error: {}", err);
-    //         std::process::exit(1);
-    //     }
-    // }
 }
 

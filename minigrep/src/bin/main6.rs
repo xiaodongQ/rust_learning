@@ -3,8 +3,8 @@
 /// 进一步优化3：
 ///     面向对象编程，Config实例通过对象的方法来返回，而不是通过函数返回值
 ///     参数解析的错误处理，通过panic!宏来处理
-/// 进一步优化4：使用Result<T, E>来处理错误
-/// 进一步优化5：分离main里的业务逻辑
+/// 进一步优化4：使用Result<T, E>来处理错误；方法名调整为`build`（语义更合适），并通过`闭包`处理错误
+/// 进一步优化5：分离main里的业务逻辑，抽取为 run 函数
 ///    
 /// 
 use std::env;
@@ -25,13 +25,14 @@ fn main() {
     // 匹配业务逻辑
     let ret = run(config);
     match ret {
-        Ok(_) => println!("run success!"),
+        // Ok(_) => println!("run success!"),
+        Ok(_) => (),
         Err(err) => {
             println!("run error: {}", err);
             std::process::exit(1);
         }
     }
-    // 或者直接用 if let Err(e) = run(config) { xxx } 来处理错误，更为简洁
+    // 或者直接用 if let Err(e) = run(config) { println!("Application error: {e}"); process::exit(1); } 来处理错误，更为简洁
 }
 
 struct Config {
@@ -60,8 +61,13 @@ impl Config {
 fn run(config : Config) -> Result<(), Box<dyn std::error::Error>> {
     // 通过std::fs模块的 read_to_string 读取文件内容，其返回结果为 std::io::Result<String>，对应于 Result<T, E>，T为String，E为Error
     // `?`操作符会返回`Result`类型，如果`Ok`则返回`Ok`中的值，如果`Err`则返回`Err`中的值
-    let _contents = fs::read_to_string(config.file_path)?;
+    let file_contents = fs::read_to_string(config.file_path)?;
+    println!("\n==============result:==============");
     
-    println!("file read ok!");
+    for line in file_contents.lines() {
+        if line.contains(&config.query) {
+            println!("{}", line);
+        }
+    }
     Ok(())
 }
