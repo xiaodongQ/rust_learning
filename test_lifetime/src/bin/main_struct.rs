@@ -6,11 +6,11 @@ fn main() {
 
 // 用于结构体打印
 #[derive(Debug)]
-struct ImportantExcerpt <'a>{
+struct ImportantExcerpt <'a> {
     part: &'a str,
 }
 
-// 不保证结构体中引用字段的生命周期 比 结构体本身的生命周期 **更长**
+// 需要保证结构体中引用字段的生命周期 比 结构体本身的生命周期 **更长**
 fn test_success() {
     let novel = String::from("Call me Ishmael. Some years ago...");
     let first_sentence = novel.split('.').next().expect("Could not find a '.'");
