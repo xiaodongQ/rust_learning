@@ -42,7 +42,7 @@ fn func_ref(s: &String){
 
 fn func_mutref(s: &mut String){
     println!("input s:{}", s);
-    s.push_str("+111"); //不允许修改借用的值
+    s.push_str("+111"); //允许修改借用的值
 }
 
 // fn func_dangling() -> &String{ return &s //这种产生空悬引用的方式会报错 missing lifetime specifier
