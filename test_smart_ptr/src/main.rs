@@ -3,6 +3,12 @@
 fn main() {
     test_simple();
     test_array();
+    test_box_arr();
+
+    let s = gen_static_str();
+    println!("{}", s);
+
+    test_deref();
 }
 
 fn test_simple() {
@@ -41,4 +47,41 @@ fn test_array() {
     println!("{:?}", arr1.len());
     // 由于 arr 不再拥有底层数组的所有权，因此下面代码将报错
     // println!("{:?}", arr.len());
+}
+
+fn test_box_arr() {
+    let arr = vec![Box::new(1), Box::new(2)];
+    let (first, second) = (&arr[0], &arr[1]);
+    let sum = **first + **second;
+}
+
+fn gen_static_str() -> &'static str{
+    let mut s = String::new();
+    s.push_str("hello, world");
+
+    Box::leak(s.into_boxed_str())
+ }
+
+ struct MyBox<T>(T);
+
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
+        MyBox(x)
+    }
+}
+
+use std::ops::Deref;
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+fn test_deref() {
+    let x = 5;
+    let y = MyBox::new(x);
+
+    println!("x = {}, y = {}", x, *y);
 }
