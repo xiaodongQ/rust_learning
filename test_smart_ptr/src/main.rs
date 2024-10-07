@@ -9,6 +9,11 @@ fn main() {
     println!("{}", s);
 
     test_deref();
+
+    test_auto_deref();
+
+    test_drop();
+    test_mem_drop();
 }
 
 fn test_simple() {
@@ -62,7 +67,7 @@ fn gen_static_str() -> &'static str{
     Box::leak(s.into_boxed_str())
  }
 
- struct MyBox<T>(T);
+struct MyBox<T>(T);
 
 impl<T> MyBox<T> {
     fn new(x: T) -> MyBox<T> {
@@ -85,3 +90,45 @@ fn test_deref() {
 
     println!("x = {}, y = {}", x, *y);
 }
+
+// 隐式 Deref
+fn test_auto_deref() {
+    // String 实现了 Deref 特征，可以在需要时自动被转换为 &str 类型
+    let s = String::from("hello world");
+    // &s 是一个 &String 类型，当它被传给 display 函数时，自动通过 Deref 转换成了 &str
+    display(&s)
+}
+
+fn display(s: &str) {
+    println!("{}",s);
+}
+
+/*********************** Drop特征 *****************************/
+// #[derive(Copy)]
+struct Foo;
+
+impl Drop for Foo {
+    fn drop(&mut self) {
+        println!("Dropping Foo!")
+    }
+}
+fn test_drop() {
+    let mut _foo = Foo;
+    // 报错：explicit destructor calls not allowed
+    // _foo.drop();
+    println!("Running!");
+}
+
+fn test_mem_drop() {
+    let mut foo = Foo;
+
+    // 报错：explicit destructor calls not allowed
+    // foo.drop();
+
+    // 调用编译器自动生成的drop函数，释放内存
+    drop(foo);
+    // 以下代码会报错：借用了所有权被转移的值
+    // println!("Running!:{:?}", foo);
+}
+
+
