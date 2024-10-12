@@ -1,5 +1,7 @@
 fn main() {
     test_raw_pointer();
+    test_unsafe_func();
+    test_unsafe_static();
 }
 
 fn test_raw_pointer() {
@@ -20,4 +22,47 @@ fn test_raw_pointer() {
         // 执行结果 r1 is: 6
         println!("r2 is: {}", *r2);
     }
+
+    // 还可根据智能指针创建裸指针
+    let a: Box<i32> = Box::new(10);
+    // 解引用再取引用创建
+    let b: *const i32 = &*a;
+    // 使用 into_raw 来创建
+    let c: *const i32 = Box::into_raw(a);
+    unsafe {
+        println!("b:{}, c:{}", *b, *c);
+    }
+}
+
+unsafe fn dangerous() {
+    // unsafe函数或方法里，不用重复用unsafe限定了
+    println!("dangerous() called");
+}
+fn test_unsafe_func() {
+    // unsafe函数或方法调用时，需要包裹在unsafe语句块中
+    unsafe {
+        dangerous();
+    };
+}
+
+static mut REQUEST_RECV: usize = 0;
+fn test_unsafe_static() {
+    // 访问或修改可变static变量时，不加unsafe则会报错
+    // note: mutable statics can be mutated by multiple threads: 
+        // aliasing violations or data races will cause undefined behavior
+    unsafe {
+        REQUEST_RECV += 1;
+        assert_eq!(REQUEST_RECV, 1);
+    }
+}
+
+unsafe trait Foo {
+    // 方法列表
+}
+unsafe impl Foo for i32 {
+    // 实现相应的方法
+}
+
+fn test_unsafe_trait() {
+
 }
