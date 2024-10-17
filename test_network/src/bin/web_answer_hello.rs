@@ -8,21 +8,13 @@ fn handle_client(mut stream: TcpStream) {
         .map(|result| result.unwrap())
         .take_while(|line| !line.is_empty())
         .collect();
+
     println!("Request: {:#?}", http_request);
 
-    // 读取请求中的第一行
-    let request_line = &http_request[0];
-    println!("request_line: {:#?}", request_line);
-
-    let (status_line, filename) = if request_line == "GET / HTTP/1.1" {
-        ("HTTP/1.1 200 OK", "hello.html")
-    } else {
-        ("HTTP/1.1 404 NOT FOUND", "404.html")
-    };
-
     // 应答
-    // hello.html和404.html放到cargo项目的根目录
-    let contents = std::fs::read_to_string(filename).unwrap();
+    let status_line = "HTTP/1.1 200 OK";
+    // hello.html放到cargo项目的根目录
+    let contents = std::fs::read_to_string("hello.html").unwrap();
     let length = contents.len();
 
     let response =

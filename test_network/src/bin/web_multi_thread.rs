@@ -1,5 +1,6 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{BufReader, prelude::*};
+use test_network::ThreadPool;
 
 fn handle_client(mut stream: TcpStream) {
     let buf_reader = BufReader::new(& stream);
@@ -8,7 +9,7 @@ fn handle_client(mut stream: TcpStream) {
         .map(|result| result.unwrap())
         .take_while(|line| !line.is_empty())
         .collect();
-    println!("Request: {:#?}", http_request);
+    // println!("Request: {:#?}", http_request);
 
     // 读取请求中的第一行
     let request_line = &http_request[0];
@@ -32,13 +33,15 @@ fn handle_client(mut stream: TcpStream) {
     stream.write_all(response.as_bytes()).unwrap();
 }
 
-fn main() -> std::io::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:80")?;
+fn main() {
+    let listener = TcpListener::bind("127.0.0.1:80").unwrap();
+    let pool = ThreadPool::new(4);
 
-    // accept connections and process them serially
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        handle_client(stream);
+
+        pool.execute(|| {
+            handle_client(stream);
+        });
     }
-    Ok(())
 }
