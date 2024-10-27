@@ -38,9 +38,9 @@ fn longest2<'a>(x: &'a str, y: &str) -> &'a str {
 }
 
 // 编译失败：悬垂引用
-fn longest3<'a>(x: & str, y: &str) -> &'a str {
-    String::from("hello").as_str()
-}
+// fn longest3<'a>(x: & str, y: &str) -> &'a str {
+//     String::from("hello").as_str()
+// }
 
 // 编译成功：返回所有权，并把内部新建字符串的所有权转移给调用者
 fn longest4<'a>(x: &'a str, y: &str) -> String {
@@ -57,5 +57,5 @@ fn return_lifetime() {
         result = longest(string1.as_str(), string2.as_str());
     }
     // 注释下面这条访问result的语句，则不会报错，只是警告上面的result没使用
-    println!("The longest string is {}", result);
+    // println!("The longest string is {}", result);
 }

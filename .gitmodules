@@ -1,0 +1,3 @@
+[submodule "demo/mini-redis"]
+	path = demo/mini-redis
+	url = https://github.com/tokio-rs/mini-redis.git
