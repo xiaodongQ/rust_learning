@@ -56,13 +56,9 @@ fn test_unsafe_static() {
     }
 }
 
-unsafe trait Foo {
+unsafe trait _Foo {
     // 方法列表
 }
-unsafe impl Foo for i32 {
+unsafe impl _Foo for i32 {
     // 实现相应的方法
-}
-
-fn test_unsafe_trait() {
-
 }

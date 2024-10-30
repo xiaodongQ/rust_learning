@@ -6,7 +6,7 @@ fn main() {
 
     // 直接调用async函数，不会输出任何结果，因为 Future 还未被执行
     println!("\n=========test download_async=======");
-    download_async("sss");
+    // download_async("sss");
     
     println!("\n=========test get_two_sites_async=======");
     get_two_sites_async();

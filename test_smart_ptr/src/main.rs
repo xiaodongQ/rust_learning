@@ -26,7 +26,7 @@ fn test_simple() {
         // 下面一行代码将报错，无法隐式调用Deref特征解引用
         // let b = a + 1; // cannot add `{integer}` to `Box<{integer}>`
         // 因此需要显式使用`*`，调用Deref特征解引用
-        let b = *a + 1;
+        let _b = *a + 1;
     }
 
     // 作用域结束，上面的智能指针就被释放了，因为Box实现了Drop特征
@@ -57,7 +57,7 @@ fn test_array() {
 fn test_box_arr() {
     let arr = vec![Box::new(1), Box::new(2)];
     let (first, second) = (&arr[0], &arr[1]);
-    let sum = **first + **second;
+    let _sum = **first + **second;
 }
 
 fn gen_static_str() -> &'static str{
@@ -120,7 +120,7 @@ fn test_drop() {
 }
 
 fn test_mem_drop() {
-    let mut foo = Foo;
+    let foo = Foo;
 
     // 报错：explicit destructor calls not allowed
     // foo.drop();

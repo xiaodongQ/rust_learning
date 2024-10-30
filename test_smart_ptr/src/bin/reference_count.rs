@@ -26,10 +26,10 @@ fn rc_ptr() {
     println!("s1 referce count: {}, *s1:{}", Arc::strong_count(&s1), *s1);
 }
 
-fn wrong_ptr() {
+fn _wrong_ptr() {
     let s = String::from("hello, world");
     // s在这里被转移给a
-    let a = Box::new(s);
+    let _a = Box::new(s);
     // 报错！此处继续尝试将 s 转移给 b
     // let b = Box::new(s);
 }

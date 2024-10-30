@@ -21,7 +21,7 @@ impl<'a> ImportantExcerpt <'a> {
 
     // 此时，返回值标注生命周期为b'，需要指定 a' 和 b' 的生命周期关系，在最后添加 where 'a: 'b
     // 'a: 'b 是生命周期约束语法，跟泛型约束非常相似，用于说明 'a 必须比 'b 活得久
-    fn print_and_return_part2<'b>(&'a self, info: &'b str) -> &'b str 
+    fn _print_and_return_part2<'b>(&'a self, info: &'b str) -> &'b str 
     where
         'a : 'b,
     {
@@ -32,7 +32,7 @@ impl<'a> ImportantExcerpt <'a> {
 
 impl<'a: 'b, 'b> ImportantExcerpt <'a> {
     // 上面声明了'b，这里就不需要再声明了
-    fn print_and_return_part3(&'a self, info: &'b str) -> &'b str {
+    fn _print_and_return_part3(&'a self, info: &'b str) -> &'b str {
         println!("info: {}", info);
         self.part
     }

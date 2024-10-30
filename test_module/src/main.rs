@@ -8,7 +8,7 @@ fn main() {
     println!("Field value: {}", my_struct.field);
 
     // 使用模块中的枚举
-    let my_enum = my_module::MyEnum::Variant;
+    let _my_enum = my_module::MyEnum::Variant;
 }
 
 mod my_module {

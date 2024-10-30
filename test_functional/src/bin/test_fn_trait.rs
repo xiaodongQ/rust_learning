@@ -122,7 +122,7 @@ fn test_fn_copy() {
 /* ============= 3. Fn ===================== */
 fn test_fn_trait() {
     println!("=========== test_fn_trait ===========");
-    let mut s = "hello".to_string();
+    let s = "hello".to_string();
 
     // 传给 exec_fn 会报错，该闭包中要修改变量，而 Fn 特征要求闭包为不可变借用
     // let update_string =  |str| s.push_str(str);

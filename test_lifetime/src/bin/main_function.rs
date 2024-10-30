@@ -50,11 +50,11 @@ fn longest4<'a>(x: &'a str, y: &str) -> String {
 // 编译失败：longest返回值生命周期和string2一致，离开括号后string2生命周期已经结束
 fn return_lifetime() {
     let string1 = String::from("long string is long");
-    let result;
+    let _result;
     {
         let string2 = String::from("xyz");
         // 此处会报错（括号外使用了result），因为 longest 返回的生命周期是 string1和string2中较小的那个生命周期，离开括号后string2的生命周期已经结束
-        result = longest(string1.as_str(), string2.as_str());
+        _result = longest(string1.as_str(), string2.as_str());
     }
     // 注释下面这条访问result的语句，则不会报错，只是警告上面的result没使用
     // println!("The longest string is {}", result);
